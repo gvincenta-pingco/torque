@@ -1,44 +1,72 @@
 //external imports
-import {Line} from 'react-chartjs-2';
-
+import { Bar } from "react-chartjs-2";
+import { useMemo } from "react";
 
 //internal imports
-import torqueData from './data.json';
+import torqueData from "./data.json";
+import { extractTorqueData } from "./utils";
 
-//sample data for chartjs data. 
-const data = {
-    labels: ['January', 'February', 'March',
-             'April', 'May'],
-    datasets: [
-      {
-        label: 'Rainfall',
-        fill: false,
-        lineTension: 0.5,
-        backgroundColor: 'rgba(75,192,192,1)',
-        borderColor: 'rgba(0,0,0,1)',
-        borderWidth: 2,
-        data: [65, 59, 80, 81, 56]
-      }
-    ]
-  }
-  
+function CloseTorque(props) {
+  //sample data for chartjs data.
+  const data = useMemo(() => {
+    //memoize data.
+    const { dataset, labels } = extractTorqueData({
+      //extract relevant data for those that are Open.
+      data: torqueData,
+      currentProfile: 1, //assume that you are only looking at profile 1.
+      currentDirection: "Close",
+    });
+    return {
+      //prepare data structure for chartJS
+      labels,
+      datasets: [
+        {
+          label: "Average close torque", //for Average close torque bar
+          data: dataset,
+          backgroundColor: "#668ac4", //blue color
+          parsing: {
+            yAxisKey: "AverageTorque",
+          },
+        },
+        {
+          label: "Last close torque", //for Last close torque bar
+          data: dataset,
+          parsing: {
+            yAxisKey: "LastTorque",
+          },
+        },
+      ],
+    };
+  }, [torqueData]);
+  return (
+    <>
+      <h2> CLOSE </h2>
+      <Bar
+        data={data}
+        options={{
+          scales: {
+            xAxis: {
+              display: true,
+              text: "Valve Position",
+            },
+            yAxis: {
+              display: true,
+              text: "Required Torque (%)",
+            },
+          },
 
-
-function OpenTorque(props){
-    return <Line
-    data={data}
-    options={{
-      title:{
-        display:true,
-        text:'Close',
-        fontSize:20
-      },
-      legend:{
-        display:true,
-        position:'right'
-      }
-    }}
-  />;
-
+          title: {
+            display: true,
+            text: "Open",
+            fontSize: 20,
+          },
+          legend: {
+            display: true,
+            position: "right",
+          },
+        }}
+      />
+    </>
+  );
 }
-export default OpenTorque;
+export default CloseTorque;
