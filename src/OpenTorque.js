@@ -1,44 +1,68 @@
 //external imports
-import {Line} from 'react-chartjs-2';
-
+import {Bar} from 'react-chartjs-2';
+import { useMemo, useState } from 'react';
 
 //internal imports
 import torqueData from './data.json';
+import { extractTorqueData } from './utils';
 
-//sample data for chartjs data. 
-const data = {
-    labels: ['January', 'February', 'March',
-             'April', 'May'],
-    datasets: [
-      {
-        label: 'Rainfall',
-        fill: false,
-        lineTension: 0.5,
-        backgroundColor: 'rgba(75,192,192,1)',
-        borderColor: 'rgba(0,0,0,1)',
-        borderWidth: 2,
-        data: [65, 59, 80, 81, 56]
-      }
-    ]
-  }
-  
+
 
 
 function OpenTorque(props){
-    return <Line
-    data={data}
+    //sample data for chartjs data. 
+    const data = useMemo(() => { //memoize data.
+        const {dataset, labels} = extractTorqueData({ //extract relevant data for those that are Open.
+            data: torqueData,
+            currentProfile : 1, 
+            currentDirection  : "Open"
+        })
+        return { //prepare data structure for chartJS
+            labels,
+            datasets: [{
+                label: 'Average open torque', //for Average open torque bar
+                data: dataset,
+                backgroundColor: "#668ac4", //blue color 
+                parsing: {
+                    yAxisKey: 'AverageTorque'
+                }
+            }, {
+                label: 'Last open torque', //for Last open torque bar
+                data: dataset,
+                parsing: {
+                    yAxisKey: 'LastTorque'
+                }
+            }]
+        } 
+    }, [torqueData])
+    return ( <>
+    <h2> OPEN </h2><Bar
+    data={ data}
     options={{
-      title:{
+
+        scales:{
+            xAxis: {
+                display: true, 
+                text: "Valve Position"
+            },
+            yAxis:{
+                display: true, 
+                text: "Required Torque (%)"
+            }
+        },
+        
+        title:{
         display:true,
         text:'Open',
         fontSize:20
-      },
-      legend:{
-        display:true,
-        position:'right'
-      }
+        },
+        legend:{
+            display:true,
+            position:'right'
+        }
     }}
-  />;
+  /> 
+  </>);
 
 }
 export default OpenTorque;
