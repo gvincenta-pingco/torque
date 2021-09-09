@@ -37,7 +37,7 @@ function CloseTorque(props) {
         },
       ],
     };
-  }, [torqueData]);
+  }, []);
   return (
     <>
       <h2> CLOSE </h2>

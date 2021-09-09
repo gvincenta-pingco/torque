@@ -37,7 +37,7 @@ function OpenTorque(props) {
         },
       ],
     };
-  }, [torqueData]);
+  }, []);
   return (
     <>
       <h2> OPEN </h2>
