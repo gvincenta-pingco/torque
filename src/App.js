@@ -6,8 +6,8 @@ import CloseTorque from "./CloseTorque";
 function App() {
   return (
     <div >
-      <div> <OpenTorque/></div>
-      <div> <CloseTorque/></div>
+      <div className="GraphItem"> <OpenTorque/></div>
+      <div className="GraphItem"> <CloseTorque/></div>
 
    
     </div>
